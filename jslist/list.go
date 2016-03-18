@@ -2,6 +2,7 @@ package jslist
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/gopherjs/gopherjs/js"
 )
@@ -23,4 +24,16 @@ func (l *List) Node() *js.Object {
 	object := document.Call("createElement", "p")
 	object.Set("innerHTML", fmt.Sprintf("<a href=\"%s\">%s</a>", l.Href, l.Text))
 	return object
+}
+
+// Routine returns bool through goroutine
+func (l *List) Routine() *js.Object {
+	ch := make(chan bool)
+
+	go func() {
+		time.Sleep(2 * time.Second)
+		ch <- true
+	}()
+
+	return js.MakeWrapper(<-ch)
 }
